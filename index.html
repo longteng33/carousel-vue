@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>vue轮播图</title>
+  <style>
+
+  </style>
+  <link rel="stylesheet" href="./index.css">
+  <script src="https://unpkg.com/vue@2.6.10/dist/vue.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <div class="carousel">
+      <transition-group  tag="ul" :name="`slide${direction}`"
+        class="banner-list">
+        <li class="banner-item" v-for="(list,index) in carouselList" :key="`list_${index}`" v-show="index==showIndex">
+          <span>{{list}}</span>
+        </li>
+      </transition-group>
+
+      <span class="prev" @click="clickChange(-1)">⬅</span>
+      <span class="next" @click="clickChange(1)">➡</span>
+      <ul class="dots">
+        <li v-for="(dot,index) in carouselList" :key="`dot_${index}`" :class="{active:index==showIndex}"
+          @mouseover="hoverChange(index)"></li>
+      </ul>
+    </div>
+
+  </div>
+
+  <script>
+    var vm = new Vue({
+      el: "#app",
+      data() {
+        return {
+          lock:false,
+          // direction滑动方向
+          direction: "Next",
+          showIndex: 0,
+          carouselList: [1, 2, 3, 4, 5],
+          
+        };
+      },
+      methods: {
+       
+        clickChange(n) {
+          if(this.lock){
+            return
+          }
+          this.lock=true;
+          setTimeout(()=>{this.lock=false},1000);
+          this.showIndex += n;
+          if (this.showIndex == -1) {
+            this.showIndex = this.carouselList.length - 1;
+          } else if (this.showIndex == this.carouselList.length) {
+            this.showIndex = 0;
+          }
+          if (n == 1) {
+            this.direction = "Next";
+          } else {
+            this.direction = "Prev";
+          }
+        },
+        hoverChange(n) {
+          if (n > this.showIndex) {
+            this.direction = "Next";
+          } else {
+            this.direction = "Prev";
+          }
+          this.showIndex = n;
+        }
+      }
+    })
+
+
+  </script>
+</body>
+
+</html>
