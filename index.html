@@ -15,8 +15,7 @@
 <body>
   <div id="app">
     <div class="carousel">
-      <transition-group  tag="ul" :name="`slide${direction}`"
-        class="banner-list">
+      <transition-group tag="ul" :name="`slide${direction}`" class="banner-list">
         <li class="banner-item" v-for="(list,index) in carouselList" :key="`list_${index}`" v-show="index==showIndex">
           <span>{{list}}</span>
         </li>
@@ -32,27 +31,23 @@
 
   </div>
 
-  <script>
+  
+  <script type="module">
+    import {throttle} from "./throttle.js"
+
     var vm = new Vue({
       el: "#app",
       data() {
         return {
-          lock:false,
           // direction滑动方向
           direction: "Next",
           showIndex: 0,
           carouselList: [1, 2, 3, 4, 5],
-          
+
         };
       },
       methods: {
-       
-        clickChange(n) {
-          if(this.lock){
-            return
-          }
-          this.lock=true;
-          setTimeout(()=>{this.lock=false},1000);
+        clickChange:throttle(function(n) {
           this.showIndex += n;
           if (this.showIndex == -1) {
             this.showIndex = this.carouselList.length - 1;
@@ -64,7 +59,8 @@
           } else {
             this.direction = "Prev";
           }
-        },
+        },1000),
+
         hoverChange(n) {
           if (n > this.showIndex) {
             this.direction = "Next";
